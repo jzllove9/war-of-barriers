@@ -14,7 +14,7 @@ export const createBoard = app => {
     for (let i = 0; i < row; i++) {
         for (let j = 0; j < col; j++) {
             const square = new PIXI.Graphics();
-            square.beginFill(0xff0000);
+            square.beginFill(0x0000ff);
             square.drawRect(i * boardItemSize + i * gap, j * boardItemSize + j * gap, boardItemSize, boardItemSize);
             square.endFill();
             board.addChild(square);
