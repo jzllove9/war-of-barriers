@@ -5,16 +5,23 @@ import GapEntity from './gap';
 
 class Board {
     app;
-    boardEntityArr = new Array(boardRow).fill(new Array(boardCol).fill(null));
+    boardEntityArr = [];
     constructor(app) {
         this.app = app;
         this.init();
     }
     init() {
         const board = new PIXI.Container();
+        this.initBoardArr();
         this.drawBoard(board);
         this.app.stage.addChild(board);
         return board;
+    }
+    initBoardArr() {
+        this.boardEntityArr = new Array(boardRow);
+        for (let i = 0; i < this.boardEntityArr.length; i++) {
+            this.boardEntityArr[i] = new Array(boardCol).fill(null);
+        }
     }
     drawBoard(board) {
         for (let i = 0; i < boardRow; i++) {
@@ -28,8 +35,8 @@ class Board {
                             currentJ * (boardRectSize + boardGapSize),
                             currentI * (boardRectSize + boardGapSize)
                         );
+                        this.boardEntityArr[i][j] = rect;
                         board.addChild(rect);
-                        this.boardEntityArr[j][i] = rect;
                     } else {
                         const currentJ = Math.ceil(j * 0.5);
                         // 纵向 gap
@@ -38,40 +45,26 @@ class Board {
                             currentI * (boardRectSize + boardGapSize),
                             GapDirect.vertical
                         );
+                        this.boardEntityArr[i][j] = gap;
                         board.addChild(gap);
-                        this.boardEntityArr[j][i] = gap;
                     }
                 } else {
-                    // if (j % 2 === 0) {
-                    //     // 横向 gap
-                    //     const currentJ = j * 0.5;
-                    //     const currentI = Math.ceil(i * 0.5);
-                    //     const gap = new GapEntity(
-                    //         currentJ * (boardRectSize + boardGapSize),
-                    //         currentI * boardRectSize + (currentI - 1) * boardGapSize,
-                    //         GapDirect.horizontal
-                    //     );
-                    //     board.addChild(gap);
-                    //     this.boardEntityArr[j][i] = gap;
-                    // } else {
-                    //     this.boardEntityArr[j][i] = null;
-                    // }
+                    if (j % 2 === 0) {
+                        // 横向 gap
+                        const currentJ = j * 0.5;
+                        const currentI = Math.ceil(i * 0.5);
+                        const gap = new GapEntity(
+                            currentJ * (boardRectSize + boardGapSize),
+                            currentI * boardRectSize + (currentI - 1) * boardGapSize,
+                            GapDirect.horizontal
+                        );
+                        board.addChild(gap);
+                        this.boardEntityArr[i][j] = gap;
+                    }
                 }
             }
         }
         console.log('jzl:  ~ Board ~ drawBoard ~  this.boardEntityArr:', this.boardEntityArr);
-    }
-    drawGap(x, y, direct, board) {
-        const gap = new PIXI.Graphics();
-        gap.beginFill(ColorEnum.boardGapColor);
-        const width = direct === GapDirect.vertical ? boardGapSize : boardRectSize;
-        const height = direct === GapDirect.vertical ? boardRectSize : boardGapSize;
-        gap.drawRect(x, y, width, height);
-        gap.endFill();
-        gap.elementType = ElementTypeEnum.gap;
-        gap.gapDirect = direct;
-        board.addChild(gap);
-        return gap;
     }
 }
 
