@@ -60,13 +60,23 @@ class Board {
                         );
                         board.addChild(gap);
                         this.boardEntityArr[i][j] = gap;
+                    } else {
+                        // 横向 gap
+                        const currentJ = j * 0.5;
+                        const currentI = Math.ceil(i * 0.5);
+                        const gap = new GapEntity(
+                            currentJ * (boardRectSize + boardGapSize),
+                            currentI * boardRectSize + (currentI - 1) * boardGapSize,
+                            GapDirect.none
+                        );
+                        board.addChild(gap);
+                        this.boardEntityArr[i][j] = gap;
                     }
                 }
             }
         }
     }
     getElementByPos(x, y) {
-        console.log('jzl:  ~ Board ~ getElementByPos ~ x, y:', this.boardEntityArr[y][x]);
         return this.boardEntityArr[y][x];
     }
 }

@@ -1,18 +1,23 @@
 class Player {
     x;
     y;
-    // 当前最优路径
-    path;
+    targetX;
+    targetY;
+    aStarPath;
     name;
     grid;
     image;
-    constructor({ x, y, grid, name, image }) {
+    blocks;
+    constructor({ x, y, targetX, targetY, grid, name, image, blocks }) {
         this.x = x;
         this.y = y;
-        this.path = [];
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.aStarPath = [];
         this.grid = grid;
         this.name = name;
         this.image = image;
+        this.blocks = blocks;
     }
     getImage() {
         return this.image;
@@ -21,6 +26,10 @@ class Player {
         this.x = x;
         this.y = y;
         cb(x, y);
+    }
+    async calcAStarPath() {
+        const path = await this.grid.calcPath(this.x, this.y, this.targetX, this.targetY);
+        this.aStarPath = path;
     }
 }
 
