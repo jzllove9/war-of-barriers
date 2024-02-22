@@ -1,12 +1,20 @@
-import { createBoard } from './board';
+import BoardEntity from './entity/board';
+import Grid from './virtual/grid';
 
 class Game {
     app;
-    board;
+    boardEntity;
+    grid;
     constructor(app) {
         this.app = app;
+        this.init();
+    }
+
+    init() {
         // 创建棋盘
-        this.board = createBoard(this.app);
+        this.boardEntity = new BoardEntity(this.app);
+        // 创建格子
+        this.grid = new Grid();
     }
 }
 

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vueuse/core": "^10.8.0",
+    "easystarjs": "^0.4.4",
     "pinia": "^2.1.7",
     "pixi.js": "^7.4.0",
     "unplugin-auto-import": "^0.17.5",
