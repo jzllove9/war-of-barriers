@@ -64,7 +64,10 @@ class Board {
                 }
             }
         }
-        console.log('jzl:  ~ Board ~ drawBoard ~  this.boardEntityArr:', this.boardEntityArr);
+    }
+    getElementByPos(x, y) {
+        console.log('jzl:  ~ Board ~ getElementByPos ~ x, y:', this.boardEntityArr[y][x]);
+        return this.boardEntityArr[y][x];
     }
 }
 

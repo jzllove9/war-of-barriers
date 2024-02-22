@@ -7,8 +7,10 @@ class Gap extends PIXI.Graphics {
         this.beginFill(ColorEnum.boardGapColor);
         const width = direct === GapDirect.vertical ? boardGapSize : boardRectSize;
         const height = direct === GapDirect.vertical ? boardRectSize : boardGapSize;
-        this.drawRect(x, y, width, height);
+        this.drawRect(0, 0, width, height);
         this.endFill();
+        this.x = x;
+        this.y = y;
         this.elementType = ElementTypeEnum.gap;
         this.gapDirect = direct;
     }

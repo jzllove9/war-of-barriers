@@ -22,5 +22,27 @@ const ColorEnum = {
     // 棋盘间隔颜色
     boardGapColor: 0x222222,
 };
+// 角色初始化位置
+const PlayerInitPos = {
+    player1: [Math.floor(boardCol * 0.5), boardRow - 1],
+    player2: [Math.floor(boardCol * 0.5), 0],
+};
 
-export { boardRectSize, boardGapSize, boardRow, boardCol, GapDirect, ColorEnum, ElementTypeEnum };
+import Role1Img from '@/assets/role1.png';
+import Role2Img from '@/assets/role2.png';
+// 角色图片
+const role1Img = Role1Img;
+const role2Img = Role2Img;
+
+export {
+    boardRectSize,
+    boardGapSize,
+    boardRow,
+    boardCol,
+    GapDirect,
+    ColorEnum,
+    ElementTypeEnum,
+    PlayerInitPos,
+    role1Img,
+    role2Img,
+};
