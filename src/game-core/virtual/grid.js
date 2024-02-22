@@ -14,11 +14,6 @@ class Grid {
                 this.grid[i] = new Array(boardCol).fill(1);
             }
         }
-        this.grid = [
-            [1, 1, 1],
-            [1, 1, 1],
-            [1, 1, 1],
-        ];
         this.easyStar = new EasyStar.js();
         // 设置可走路径
         this.easyStar.setAcceptableTiles([1]);
