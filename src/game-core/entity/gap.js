@@ -8,8 +8,8 @@ const sizeMap = {
         color: ColorEnum.boardGapColor,
     },
     [GapDirect.vertical]: {
-        height: boardGapSize,
-        width: boardRectSize,
+        height: boardRectSize,
+        width: boardGapSize,
         color: ColorEnum.boardGapColor,
     },
     [GapDirect.none]: {
@@ -19,6 +19,8 @@ const sizeMap = {
     },
 };
 class Gap extends PIXI.Graphics {
+    // 该间隙是否已被填充
+    blocked = false;
     constructor(x, y, direct) {
         super();
         this.beginFill(sizeMap[direct].color);

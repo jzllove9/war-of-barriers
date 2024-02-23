@@ -9,21 +9,23 @@ class Grid {
     }
     async init() {
         for (let i = 0; i < boardRow; i++) {
-            this.grid = new Array(boardRow);
-            for (let i = 0; i < this.grid.length; i++) {
-                this.grid[i] = new Array(boardCol).fill(1);
+            this.grid[i] = [];
+            if (i % 2 === 0) {
+                for (let j = 0; j < boardCol; j++) {
+                    this.grid[i][j] = j % 2 === 0 ? 1 : 2;
+                }
+            } else {
+                for (let j = 0; j < boardCol; j++) {
+                    this.grid[i][j] = 2;
+                }
             }
         }
-        this.grid = [
-            [1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1],
-            [1, 1, 0, 1, 1],
-            [1, 1, 1, 1, 1],
-            [1, 1, 1, 1, 1],
-        ];
+        // TODO
+        this.grid[4][4] = 0;
         this.easyStar = new EasyStar.js();
         // 设置可走路径
-        this.easyStar.setAcceptableTiles([1]);
+        this.easyStar.setAcceptableTiles([1, 2]);
+        this.easyStar.setTileCost(2, 999999);
         this.easyStar.setGrid(this.grid);
     }
     setBlock(x, y) {

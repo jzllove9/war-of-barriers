@@ -3,6 +3,7 @@
  */
 import * as PIXI from 'pixi.js';
 import { halfBordRectSize } from '../const-value';
+import Rect from './rect';
 class AssistLine {
     app;
     player;
@@ -10,14 +11,14 @@ class AssistLine {
     boardEntity;
     color;
     offset;
-    constructor(app, player, boardEntity, offset = 10, color = 0x1afa28) {
+    constructor(app, player, boardEntity, offset = 10, color = 0x00bd14) {
         this.app = app;
         this.player = player;
         this.boardEntity = boardEntity;
         this.graph = new PIXI.Graphics();
         this.offset = offset;
         this.color = color;
-        this.graph.lineStyle(2, color, 1);
+        this.graph.lineStyle(1, color, 0.8);
         this.app.stage.addChild(this.graph);
         this.draw();
     }
@@ -25,9 +26,13 @@ class AssistLine {
         if (!this.graph) return;
         const aStarPath = this.player.aStarPath;
         if (!aStarPath?.length) return;
-        for (let i = 0; i < aStarPath.length; i++) {
-            const pos = aStarPath[i];
-            const tempPos = this.boardEntity.getElementByPos(pos.x, pos.y).position;
+        const elementArr = aStarPath.map(item => {
+            return this.boardEntity.getElementByPos(item.x, item.y);
+        });
+        const currentElementArr = elementArr.filter(item => item instanceof Rect);
+        for (let i = 0; i < currentElementArr.length; i++) {
+            const element = currentElementArr[i];
+            const tempPos = element.position;
             if (i === 0) {
                 this.graph.moveTo(
                     tempPos.x + halfBordRectSize + this.offset,

@@ -9,9 +9,14 @@ const boardRectSize = 26;
 const halfBordRectSize = boardRectSize * 0.5;
 // 棋盘格子间距
 const boardGapSize = 10;
-// 棋盘格子数量
-const boardRow = 5;
-const boardCol = 5;
+/**
+ * 棋盘格子数量 N 需要符合条件:
+ * (N % 2 !== 0) && (Math.floor(N * 0.5) % 2 === 0) 
+ * 例如: 3,5,9,13,17...
+ */
+const N = 5;
+const boardRow = 2 * N - 1;
+const boardCol = 2 * N - 1;
 // 棋盘格子间距方向
 const GapDirect = {
     horizontal: 'h',
@@ -30,7 +35,7 @@ const ColorEnum = {
     // 棋盘间隔颜色
     boardGapColor: 0x222222,
     // 棋盘间隔颜色2
-    boardGapColor2: 0x999999,
+    boardGapColor2: 0x333333,
 };
 // 角色初始化位置
 const PlayerInitPos = {

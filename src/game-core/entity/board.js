@@ -1,13 +1,15 @@
 import * as PIXI from 'pixi.js';
-import { boardRectSize, boardGapSize, boardRow, boardCol, GapDirect, ColorEnum, ElementTypeEnum } from '../const-value';
+import { boardRectSize, boardGapSize, boardRow, boardCol, GapDirect } from '../const-value';
 import RectEntity from './rect';
 import GapEntity from './gap';
 
 class Board {
     app;
+    grid;
     boardEntityArr = [];
-    constructor(app) {
+    constructor(app, grid) {
         this.app = app;
+        this.grid = grid;
         this.init();
     }
     init() {
@@ -61,11 +63,12 @@ class Board {
                         board.addChild(gap);
                         this.boardEntityArr[i][j] = gap;
                     } else {
-                        // 横向 gap
+                        // 无方向 gap
                         const currentJ = j * 0.5;
+                        const currentJCeil = Math.ceil(currentJ);
                         const currentI = Math.ceil(i * 0.5);
                         const gap = new GapEntity(
-                            currentJ * (boardRectSize + boardGapSize),
+                            currentJCeil * boardRectSize + (currentJCeil - 1) * boardGapSize,
                             currentI * boardRectSize + (currentI - 1) * boardGapSize,
                             GapDirect.none
                         );
@@ -76,6 +79,7 @@ class Board {
             }
         }
     }
+    // 通过二维数组坐标获取元素
     getElementByPos(x, y) {
         return this.boardEntityArr[y][x];
     }
