@@ -20,6 +20,8 @@ class Game {
     grid;
     player1;
     player2;
+
+    currentPlayer;
     constructor(app) {
         this.app = app;
         this.init();
@@ -57,6 +59,16 @@ class Game {
         await this.role2Entity.init();
         this.assist1LineEnitity = new AssistLineEnitity(this.app, this.player1, this.boardEntity, 2);
         this.assist2LineEnitity = new AssistLineEnitity(this.app, this.player2, this.boardEntity, -2, 0xff6f64);
+
+        // TODO 暂定 player1 为先手，后期改为随机
+        this.currentPlayer = this.player1;
+    }
+
+    // 切换回合
+    nextTurn() {
+        // TODO 高亮当前玩家，切换玩家移动权
+        this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
+        // TODO 处理界面内容，显示为当前玩家名称
     }
 }
 

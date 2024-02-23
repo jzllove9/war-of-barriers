@@ -29,6 +29,7 @@ class Player {
     }
     async calcAStarPath() {
         const path = await this.grid.calcPath(this.x, this.y, this.targetX, this.targetY);
+        console.log('jzl:  ~ Player ~ calcAStarPath ~ path:', path);
         this.aStarPath = path;
     }
 }

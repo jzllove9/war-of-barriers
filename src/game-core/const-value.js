@@ -8,7 +8,7 @@ const role2Img = Role2Img;
 const boardRectSize = 26;
 const halfBordRectSize = boardRectSize * 0.5;
 // 棋盘格子间距
-const boardGapSize = 10;
+const boardGapSize = 26;
 /**
  * 棋盘格子数量 N 需要符合条件:
  * (N % 2 !== 0) && (Math.floor(N * 0.5) % 2 === 0) 

@@ -18,7 +18,7 @@ class AssistLine {
         this.graph = new PIXI.Graphics();
         this.offset = offset;
         this.color = color;
-        this.graph.lineStyle(1, color, 0.8);
+        this.graph.lineStyle(1, color, 1);
         this.app.stage.addChild(this.graph);
         this.draw();
     }
@@ -26,22 +26,24 @@ class AssistLine {
         if (!this.graph) return;
         const aStarPath = this.player.aStarPath;
         if (!aStarPath?.length) return;
+        console.log('jzl:  ~ AssistLine ~ draw ~ aStarPath:', aStarPath);
         const elementArr = aStarPath.map(item => {
             return this.boardEntity.getElementByPos(item.x, item.y);
         });
-        const currentElementArr = elementArr.filter(item => item instanceof Rect);
+        // const currentElementArr = elementArr.filter(item => item instanceof Rect);
+        const currentElementArr = elementArr
         for (let i = 0; i < currentElementArr.length; i++) {
             const element = currentElementArr[i];
             const tempPos = element.position;
             if (i === 0) {
                 this.graph.moveTo(
-                    tempPos.x + halfBordRectSize + this.offset,
-                    tempPos.y + halfBordRectSize + this.offset
+                    tempPos.x + halfBordRectSize,
+                    tempPos.y + halfBordRectSize
                 );
             } else {
                 this.graph.lineTo(
-                    tempPos.x + halfBordRectSize + this.offset,
-                    tempPos.y + halfBordRectSize + this.offset
+                    tempPos.x + halfBordRectSize,
+                    tempPos.y + halfBordRectSize
                 );
             }
         }
