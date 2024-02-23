@@ -25,8 +25,11 @@ class Grid {
         this.easyStar.setAcceptableTiles([1, 2]);
         this.easyStar.setTileCost(2, 999);
         this.easyStar.setGrid(this.grid);
+
+        // TODO test
         this.setBlock(4, 1);
-        console.log('jzl:  ~ Grid ~ init ~ this.grid:', this.grid);
+        this.setBlock(2, 1);
+        this.setBlock(6, 1);
     }
     setBlock(x, y) {
         this.easyStar.avoidAdditionalPoint(x, y);

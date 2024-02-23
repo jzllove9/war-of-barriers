@@ -14,10 +14,9 @@ class Board {
     }
     init() {
         const board = new PIXI.Container();
+        this.app.stage.addChild(board);
         this.initBoardArr();
         this.drawBoard(board);
-        this.app.stage.addChild(board);
-        return board;
     }
     initBoardArr() {
         this.boardEntityArr = new Array(boardRow);
@@ -45,7 +44,9 @@ class Board {
                         const gap = new GapEntity(
                             currentJ * boardRectSize + (currentJ - 1) * boardGapSize,
                             currentI * (boardRectSize + boardGapSize),
-                            GapDirect.vertical
+                            GapDirect.vertical,
+                            j,
+                            i
                         );
                         this.boardEntityArr[i][j] = gap;
                         board.addChild(gap);
@@ -58,7 +59,9 @@ class Board {
                         const gap = new GapEntity(
                             currentJ * (boardRectSize + boardGapSize),
                             currentI * boardRectSize + (currentI - 1) * boardGapSize,
-                            GapDirect.horizontal
+                            GapDirect.horizontal,
+                            j,
+                            i
                         );
                         board.addChild(gap);
                         this.boardEntityArr[i][j] = gap;
