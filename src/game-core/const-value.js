@@ -36,6 +36,10 @@ const ColorEnum = {
     boardGapColor: 0x222222,
     // 棋盘间隔颜色2
     boardGapColor2: 0x333333,
+    // 阻挡块颜色
+    blockColor: 0xffff00,
+    // 无效阻挡块颜色
+    invalidBlockColor: 0xff0000,
 };
 // 角色初始化位置
 const PlayerInitPos = {

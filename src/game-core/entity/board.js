@@ -2,21 +2,26 @@ import * as PIXI from 'pixi.js';
 import { boardRectSize, boardGapSize, boardRow, boardCol, GapDirect } from '../const-value';
 import RectEntity from './rect';
 import GapEntity from './gap';
+import BlockEntity from './block';
 
 class Board {
     app;
     grid;
     boardEntityArr = [];
+    boardEntity;
+    blockEntity;
     constructor(app, grid) {
         this.app = app;
         this.grid = grid;
         this.init();
     }
     init() {
-        const board = new PIXI.Container();
-        this.app.stage.addChild(board);
-        this.initBoardArr();
-        this.drawBoard(board);
+        this.boardEntity = new PIXI.Container();
+        this.blockEntity = new BlockEntity(this);
+        this.drawBoard(this.boardEntity);
+        this.boardEntity.addChild(this.blockEntity.block)
+        this.boardEntity.addChild(this.blockEntity.virtualBlock);
+        this.app.stage.addChild(this.boardEntity);
     }
     initBoardArr() {
         this.boardEntityArr = new Array(boardRow);
@@ -25,6 +30,7 @@ class Board {
         }
     }
     drawBoard(board) {
+        this.initBoardArr();
         for (let i = 0; i < boardRow; i++) {
             for (let j = 0; j < boardCol; j++) {
                 if (i % 2 === 0) {
@@ -46,7 +52,8 @@ class Board {
                             currentI * (boardRectSize + boardGapSize),
                             GapDirect.vertical,
                             j,
-                            i
+                            i,
+                            this.blockEntity
                         );
                         this.boardEntityArr[i][j] = gap;
                         board.addChild(gap);
@@ -61,7 +68,8 @@ class Board {
                             currentI * boardRectSize + (currentI - 1) * boardGapSize,
                             GapDirect.horizontal,
                             j,
-                            i
+                            i,
+                            this.blockEntity
                         );
                         board.addChild(gap);
                         this.boardEntityArr[i][j] = gap;

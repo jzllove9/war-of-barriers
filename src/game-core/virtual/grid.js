@@ -24,15 +24,18 @@ class Grid {
         // 设置可走路径
         this.easyStar.setAcceptableTiles([1, 2]);
         this.easyStar.setTileCost(2, 999);
+        this.updateGrid(this.grid);
+    }
+    getGrid() {
+        return this.grid;
+    }
+    updateGrid(grid) {
         this.easyStar.setGrid(this.grid);
-
-        // TODO test
-        this.setBlock(4, 1);
-        this.setBlock(2, 1);
-        this.setBlock(6, 1);
     }
     setBlock(x, y) {
-        this.easyStar.avoidAdditionalPoint(x, y);
+        // this.easyStar.avoidAdditionalPoint(x, y);
+        this.grid[y][x] = 0
+        this.updateGrid(grid)
     }
     calcPath(startX, startY, endX, endY) {
         return new Promise((resolve, reject) => {

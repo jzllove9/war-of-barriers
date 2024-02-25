@@ -24,8 +24,8 @@ class Gap extends PIXI.Graphics {
     gapDirect;
     indexX;
     indexY;
-    virtualBlockGraphics;
-    constructor(posX, posY, direct, indexX, indexY) {
+    blockEntity;
+    constructor(posX, posY, direct, indexX, indexY, blockEntity) {
         super();
         this.render();
         this.x = posX;
@@ -34,8 +34,7 @@ class Gap extends PIXI.Graphics {
         this.indexY = indexY;
         this.elementType = ElementTypeEnum.gap;
         this.gapDirect = direct;
-        this.virtualBlockGraphics = new PIXI.Graphics();
-        this.addChild(this.virtualBlockGraphics);
+        this.blockEntity = blockEntity;
         this.init();
     }
     init() {
@@ -45,7 +44,7 @@ class Gap extends PIXI.Graphics {
         this.drawRect(0, 0, width, height);
         this.endFill();
 
-        if (this.gapDirect !== GapDirect.none) {
+        if (this.gapDirect !== GapDirect.none || this.blockEntity) {
             this.cursor = 'pointer';
             this.eventMode = 'static';
             this.on('pointerover', this.hoverHandler, this);
@@ -54,17 +53,25 @@ class Gap extends PIXI.Graphics {
     hoverHandler() {
         this.off('pointerover', this.hoverHandler, this);
         this.on('pointerleave', this.leaveHandler, this);
-        this.virtualBlockGraphics.lineStyle(2, 0xffffff, 1);
-        this.virtualBlockGraphics.moveTo(0, 0);
-        const width = this.gapDirect === GapDirect.horizontal ? boardRectSize * 2 + boardGapSize : boardGapSize;
-        const height = this.gapDirect === GapDirect.horizontal ? boardGapSize : boardRectSize * 2 + boardGapSize;
-        this.virtualBlockGraphics.drawRect(0, 0, width, height);
-        this.virtualBlockGraphics.endFill();
+        this.on('click', this.clickHandler, this)
+        this.blockEntity.drawVirtualBlock(this.indexX, this.indexY, this.gapDirect)
     }
     leaveHandler() {
         this.off('pointerleave', this.leaveHandler, this);
+        this.off('click', this.clickHandler, this)
         this.on('pointerover', this.hoverHandler, this);
-        this.virtualBlockGraphics.clear();
+        this.blockEntity.clearVirtualBlock();
+    }
+    clickHandler() {
+        this.blockEntity.drawBlock(this.indexX, this.indexY, this.gapDirect)
+    }
+    removeInteraction() {
+        this.off('pointerover', this.hoverHandler, this);
+        this.off('pointerleave', this.leaveHandler, this);
+        this.off('click', this.clickHandler, this)
+        this.cursor = 'none';
+        this.eventMode = 'none'
+        this.blockEntity?.clearVirtualBlock();
     }
 }
 
