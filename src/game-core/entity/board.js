@@ -8,19 +8,22 @@ class Board extends PIXI.utils.EventEmitter {
     grid;
     boardEntityArr = [];
     boardEntity;
-    constructor(app, grid) {
+    constructor(container, grid) {
         super();
-        this.app = app;
+        this.container = container;
         this.grid = grid;
         this.init();
     }
     init() {
         this.boardEntity = new PIXI.Container();
         this.drawBoard(this.boardEntity);
-        this.app.stage.addChild(this.boardEntity);
+        this.container.addChild(this.boardEntity);
     }
     getContainer() {
         return this.boardEntity;
+    }
+    getAllChildEnitity() {
+        return this.boardEntityArr;
     }
     initBoardArr() {
         this.boardEntityArr = new Array(boardRow);

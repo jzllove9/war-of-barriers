@@ -2,17 +2,17 @@ import * as PIXI from 'pixi.js';
 import { boardRectSize } from '../const-value';
 
 class Role extends PIXI.Sprite {
-    app;
+    container;
     player;
     boardEntity;
     texture;
-    constructor(app, player, boardEntity) {
+    constructor(container, player, boardEntity) {
         const img = player.getImage();
         const texture = PIXI.Texture.from(img);
 
         super(texture);
         this.texture = texture;
-        this.app = app;
+        this.container = container;
         this.player = player;
         this.boardEntity = boardEntity;
     }
@@ -24,7 +24,7 @@ class Role extends PIXI.Sprite {
         currentRect.fillByRole = true;
         const position = currentRect.position;
         this.position.set(position.x, position.y);
-        this.app.stage.addChild(this);
+        this.container.addChild(this);
     }
     async updatePath() {
         await this.player.calcAStarPath();

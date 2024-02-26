@@ -43,12 +43,6 @@ class Gap extends PIXI.Graphics {
         const height = sizeMap[this.gapDirect].height;
         this.drawRect(0, 0, width, height);
         this.endFill();
-
-        if (this.gapDirect !== GapDirect.none) {
-            this.cursor = 'pointer';
-            this.eventMode = 'static';
-            this.on('pointerover', this.hoverHandler, this);
-        }
     }
     hoverHandler() {
         this.off('pointerover', this.hoverHandler, this);
@@ -77,12 +71,29 @@ class Gap extends PIXI.Graphics {
             d: this.gapDirect,
         });
     }
-    removeInteraction() {
+    /**
+     * 开启交互
+     */
+    doOpenInteractive() {
+        if (this.gapDirect !== GapDirect.none && !this.blocked) {
+            this.cursor = 'pointer';
+            this.eventMode = 'static';
+            this.on('pointerover', this.hoverHandler, this);
+        }
+    }
+    /**
+     * 关闭交互
+     */
+    doCloseInteractive() {
+        this.cursor = 'none';
+        this.eventMode = 'none';
+    }
+    doBlock() {
+        this.blocked = true;
         this.off('pointerover', this.hoverHandler, this);
         this.off('pointerleave', this.leaveHandler, this);
         this.off('click', this.clickHandler, this);
-        this.cursor = 'none';
-        this.eventMode = 'none';
+        this.doCloseInteractive();
     }
 }
 

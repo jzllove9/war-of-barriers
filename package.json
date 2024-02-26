@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vueform/toggle": "^2.1.4",
     "@vueuse/core": "^10.8.0",
     "easystarjs": "^0.4.4",
     "pinia": "^2.1.7",

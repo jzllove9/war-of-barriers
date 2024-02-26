@@ -17,6 +17,8 @@ const boardGapSize = 10;
 const N = 5;
 const boardRow = 2 * N - 1;
 const boardCol = 2 * N - 1;
+const boardTotalWidth = boardRectSize * N + boardGapSize * (N - 1);
+const boardTotalHeight = boardRectSize * N + boardGapSize * (N - 1);
 // 棋盘格子间距方向
 const GapDirect = {
     horizontal: 'h',
@@ -49,6 +51,12 @@ const PlayerInitPos = {
 // 每人最大 block 数量
 const MaxBlocksNum = 10;
 
+// 玩家当前回合的操作模式枚举
+const RoleMoveModeEnum = {
+    Move: 'move',
+    Block: 'block',
+};
+
 export {
     boardRectSize,
     halfBordRectSize,
@@ -62,4 +70,7 @@ export {
     role1Img,
     role2Img,
     MaxBlocksNum,
+    boardTotalWidth,
+    boardTotalHeight,
+    RoleMoveModeEnum,
 };

@@ -1,19 +1,18 @@
 import Blocks from './blocks';
-
+import { boardCol } from '@/game-core/const-value';
 class Player {
     x;
     y;
     targetX;
     targetY;
-    aStarPath;
+    aStarPaths;
     name;
     grid;
     image;
     blocks;
-    constructor({ x, y, targetX, targetY, grid, name, image }) {
+    constructor({ x, y, targetY, grid, name, image }) {
         this.x = x;
         this.y = y;
-        this.targetX = targetX;
         this.targetY = targetY;
         this.aStarPath = [];
         this.grid = grid;
@@ -24,14 +23,26 @@ class Player {
     getImage() {
         return this.image;
     }
+    getPaths() {
+        return this.aStarPaths;
+    }
     move(x, y, cb) {
         this.x = x;
         this.y = y;
         cb(x, y);
     }
     async calcAStarPath() {
-        const path = await this.grid.calcPath(this.x, this.y, this.targetX, this.targetY);
-        this.aStarPath = path;
+        const resPathArr = [];
+        for (let i = 0; i < boardCol; i++) {
+            if (i % 2 === 0) {
+                const path = await this.grid.calcPath(this.x, this.y, i, this.targetY);
+                if (path) {
+                    resPathArr.push(path);
+                }
+            }
+        }
+
+        this.aStarPaths = resPathArr;
     }
     getRemainBlocks() {
         return this.blocks.checkRemain();

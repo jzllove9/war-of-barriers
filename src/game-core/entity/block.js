@@ -54,9 +54,8 @@ class Block extends PIXI.Graphics {
 
         this.clearVirtualBlock();
         effectGaps.forEach(gap => {
-            // 禁用所影响gap的鼠标交互事件
-            gap.blocked = true;
-            gap?.removeInteraction?.();
+            // 处理当前 gap 的 block 操作
+            gap?.doBlock?.();
             // 更新grid
             this.boardInstance.grid.setBlock(gap.indexX, gap.indexY);
         });
