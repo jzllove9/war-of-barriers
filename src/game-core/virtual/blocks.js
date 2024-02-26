@@ -1,15 +1,17 @@
+import { MaxBlocksNum } from '../const-value';
+
 class Blocks {
     color;
-    // 每人初始化10个
-    remain = 10;
+    remain = MaxBlocksNum;
     constructor() {}
     checkRemain() {
         return this.remain > 0;
     }
     // 减少一个
     decreaseRemain() {
-        if (this.remain <= 0) return;
+        if (this.remain <= 0) return 0;
         this.remain--;
+        return this.remain;
     }
 }
 export default Blocks;

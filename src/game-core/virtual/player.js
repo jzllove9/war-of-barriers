@@ -1,3 +1,5 @@
+import Blocks from './blocks';
+
 class Player {
     x;
     y;
@@ -8,7 +10,7 @@ class Player {
     grid;
     image;
     blocks;
-    constructor({ x, y, targetX, targetY, grid, name, image, blocks }) {
+    constructor({ x, y, targetX, targetY, grid, name, image }) {
         this.x = x;
         this.y = y;
         this.targetX = targetX;
@@ -17,7 +19,7 @@ class Player {
         this.grid = grid;
         this.name = name;
         this.image = image;
-        this.blocks = blocks;
+        this.blocks = new Blocks();
     }
     getImage() {
         return this.image;
@@ -29,8 +31,14 @@ class Player {
     }
     async calcAStarPath() {
         const path = await this.grid.calcPath(this.x, this.y, this.targetX, this.targetY);
-        console.log('jzl:  ~ Player ~ calcAStarPath ~ path:', path);
         this.aStarPath = path;
+    }
+    getRemainBlocks() {
+        return this.blocks.checkRemain();
+    }
+    useBlock() {
+        const remain = this.blocks.decreaseRemain();
+        console.log(`玩家${this.name}使用block，剩余${remain}`);
     }
 }
 

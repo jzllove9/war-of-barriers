@@ -24,8 +24,8 @@ class Gap extends PIXI.Graphics {
     gapDirect;
     indexX;
     indexY;
-    blockEntity;
-    constructor(posX, posY, direct, indexX, indexY, blockEntity) {
+    boardInstance;
+    constructor(posX, posY, direct, indexX, indexY, boardInstance) {
         super();
         this.render();
         this.x = posX;
@@ -34,7 +34,7 @@ class Gap extends PIXI.Graphics {
         this.indexY = indexY;
         this.elementType = ElementTypeEnum.gap;
         this.gapDirect = direct;
-        this.blockEntity = blockEntity;
+        this.boardInstance = boardInstance;
         this.init();
     }
     init() {
@@ -44,7 +44,7 @@ class Gap extends PIXI.Graphics {
         this.drawRect(0, 0, width, height);
         this.endFill();
 
-        if (this.gapDirect !== GapDirect.none || this.blockEntity) {
+        if (this.gapDirect !== GapDirect.none) {
             this.cursor = 'pointer';
             this.eventMode = 'static';
             this.on('pointerover', this.hoverHandler, this);
@@ -53,25 +53,36 @@ class Gap extends PIXI.Graphics {
     hoverHandler() {
         this.off('pointerover', this.hoverHandler, this);
         this.on('pointerleave', this.leaveHandler, this);
-        this.on('click', this.clickHandler, this)
-        this.blockEntity.drawVirtualBlock(this.indexX, this.indexY, this.gapDirect)
+        this.on('click', this.clickHandler, this);
+        this.boardInstance?.emit('onGapHover', {
+            x: this.indexX,
+            y: this.indexY,
+            d: this.gapDirect,
+        });
     }
     leaveHandler() {
         this.off('pointerleave', this.leaveHandler, this);
-        this.off('click', this.clickHandler, this)
+        this.off('click', this.clickHandler, this);
         this.on('pointerover', this.hoverHandler, this);
-        this.blockEntity.clearVirtualBlock();
+        this.boardInstance?.emit('onGapLeave', {
+            x: this.indexX,
+            y: this.indexY,
+            d: this.gapDirect,
+        });
     }
     clickHandler() {
-        this.blockEntity.drawBlock(this.indexX, this.indexY, this.gapDirect)
+        this.boardInstance?.emit('onGapClick', {
+            x: this.indexX,
+            y: this.indexY,
+            d: this.gapDirect,
+        });
     }
     removeInteraction() {
         this.off('pointerover', this.hoverHandler, this);
         this.off('pointerleave', this.leaveHandler, this);
-        this.off('click', this.clickHandler, this)
+        this.off('click', this.clickHandler, this);
         this.cursor = 'none';
-        this.eventMode = 'none'
-        this.blockEntity?.clearVirtualBlock();
+        this.eventMode = 'none';
     }
 }
 

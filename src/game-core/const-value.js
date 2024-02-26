@@ -8,10 +8,10 @@ const role2Img = Role2Img;
 const boardRectSize = 26;
 const halfBordRectSize = boardRectSize * 0.5;
 // 棋盘格子间距
-const boardGapSize = 26;
+const boardGapSize = 10;
 /**
  * 棋盘格子数量 N 需要符合条件:
- * (N % 2 !== 0) && (Math.floor(N * 0.5) % 2 === 0) 
+ * (N % 2 !== 0) && (Math.floor(N * 0.5) % 2 === 0)
  * 例如: 3,5,9,13,17...
  */
 const N = 5;
@@ -46,6 +46,8 @@ const PlayerInitPos = {
     player1: [Math.floor(boardCol * 0.5), boardRow - 1],
     player2: [Math.floor(boardCol * 0.5), 0],
 };
+// 每人最大 block 数量
+const MaxBlocksNum = 10;
 
 export {
     boardRectSize,
@@ -59,4 +61,5 @@ export {
     PlayerInitPos,
     role1Img,
     role2Img,
+    MaxBlocksNum,
 };

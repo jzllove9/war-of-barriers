@@ -30,12 +30,12 @@ class Grid {
         return this.grid;
     }
     updateGrid(grid) {
-        this.easyStar.setGrid(this.grid);
+        // console.log('jzl:  ~ Grid ~ updateGrid ~ grid:', grid);
+        this.easyStar.setGrid(grid);
     }
     setBlock(x, y) {
-        // this.easyStar.avoidAdditionalPoint(x, y);
-        this.grid[y][x] = 0
-        this.updateGrid(grid)
+        this.grid[y][x] = 0;
+        this.updateGrid(this.grid);
     }
     calcPath(startX, startY, endX, endY) {
         return new Promise((resolve, reject) => {
