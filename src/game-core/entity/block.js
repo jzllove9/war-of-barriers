@@ -36,6 +36,7 @@ class Block extends PIXI.Graphics {
         const { x, y, isHitWithExistBlocks } = this.getCurrentBlockInfo(indexX, indexY, direct);
         // 判断当前所影响的gap里面是否已经存在被绘制的内容，给予不同颜色
         const color = isHitWithExistBlocks ? ColorEnum.invalidBlockColor : ColorEnum.blockColor;
+        this.clearVirtualBlock();
         this.drawBlock(this.virtualBlock, x, y, direct, 0.3, color);
     }
 
@@ -133,7 +134,6 @@ class Block extends PIXI.Graphics {
         }
 
         const currentElement = this.boardInstance.getElementByPos(indexX, indexY);
-        // TODO 优化：绘制的block可以看起来再 ‘薄’ 一点
         const currentX = direct === GapDirect.horizontal ? currentElement.x + PosOffset : currentElement.x;
         const currentY = direct === GapDirect.horizontal ? currentElement.y : currentElement.y + PosOffset;
         const width = direct === GapDirect.horizontal ? (boardRectSize - PosOffset) * 2 + boardGapSize : boardGapSize;

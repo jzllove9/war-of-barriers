@@ -147,11 +147,11 @@ class Game extends PIXI.utils.EventEmitter {
 
     // 重新计算角色路径，辅助线重绘
     onGapClick(gapInfo) {
+        if (gapInfo?.b) return;
         if (!this.currentPlayer?.getRemainBlocks()) {
             console.log(`玩家${this.currentPlayer.name}剩余block不足`);
             return;
         }
-
         this.blockEntity.generateBlock(
             gapInfo.x,
             gapInfo.y,

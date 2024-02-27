@@ -69,6 +69,7 @@ class Gap extends PIXI.Graphics {
             x: this.indexX,
             y: this.indexY,
             d: this.gapDirect,
+            b: this.blocked,
         });
     }
     /**

@@ -1,29 +1,9 @@
-# step-to-win
+# 围追堵截
 
-This template should help get you started developing with Vue 3 in Vite.
+桌游《围追堵截》web版，使用 pixi.js 实现。
 
-## Recommended IDE Setup
+## 效果展示 
+//TODO
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+## 游戏规则 
+//TODO
