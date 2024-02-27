@@ -34,6 +34,8 @@ const ElementTypeEnum = {
 const ColorEnum = {
     // 棋盘格子颜色
     boardRectColor: 0x0000ff,
+    // 棋盘格子高亮颜色
+    boardRectHighlightColor: 0x7a06d6,
     // 棋盘间隔颜色
     boardGapColor: 0x222222,
     // 棋盘间隔颜色2
@@ -57,6 +59,13 @@ const RoleMoveModeEnum = {
     Block: 'block',
 };
 
+// 游戏状态
+const GameStatusEnum = {
+    Running: 'running', // 游戏正常运行
+    RoleMoving: 'role-moving', // 角色移动中
+    End: 'end', // 游戏结束
+};
+
 export {
     boardRectSize,
     halfBordRectSize,
@@ -73,4 +82,5 @@ export {
     boardTotalWidth,
     boardTotalHeight,
     RoleMoveModeEnum,
+    GameStatusEnum,
 };

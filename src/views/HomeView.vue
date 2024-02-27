@@ -1,6 +1,12 @@
 <template>
     <div ref="container" class="container">
-        <div class="player-ui player1" :class="{ current: currentPlayer?.name === 'player1' }">
+        <div
+            class="player-ui player1"
+            :class="[
+                { disabled: gameState !== GameStatusEnum.Running || currentPlayer?.name === 'player2' },
+                { current: currentPlayer?.name === 'player1' },
+            ]"
+        >
             <PlayerController
                 ref="player1Ctrl"
                 :info="player1Info"
@@ -8,7 +14,13 @@
                 @change-assistLine-display="changeAssistLineDisplay"
             ></PlayerController>
         </div>
-        <div class="player-ui player2" :class="{ current: currentPlayer?.name === 'player2' }">
+        <div
+            class="player-ui player2"
+            :class="[
+                { disabled: gameState !== GameStatusEnum.Running || currentPlayer?.name === 'player1' },
+                { current: currentPlayer?.name === 'player2' },
+            ]"
+        >
             <PlayerController
                 ref="player2Ctrl"
                 :info="player2Info"
@@ -23,7 +35,7 @@
 import * as PIXI from 'pixi.js';
 import Game from '../game-core/index';
 import PlayerController from '../components/player-controller.vue';
-import { RoleMoveModeEnum } from '@/game-core/const-value';
+import { RoleMoveModeEnum, GameStatusEnum } from '@/game-core/const-value';
 
 const usePIXI = () => {
     const container = ref();
@@ -48,6 +60,7 @@ const useGame = () => {
     const player2Info = ref({});
     const player1Ctrl = ref();
     const player2Ctrl = ref();
+    const gameState = ref(GameStatusEnum.Running);
     let game = null;
 
     const gamePlayerInitHandler = playerArr => {
@@ -64,7 +77,19 @@ const useGame = () => {
     };
 
     const gameIllegalPathHandler = player => {
-        alert(`玩家${player.name}违规，游戏结束`);
+        console.log(`玩家${player.name}违规，游戏结束`);
+    };
+
+    const gameStateChangeHandler = status => {
+        gameState.value = status;
+        switch (gameState.value) {
+            case GameStatusEnum.End:
+                currentPlayer.value = null;
+                break;
+
+            default:
+                break;
+        }
     };
 
     const initGame = app => {
@@ -72,6 +97,8 @@ const useGame = () => {
         game.on('player-init', gamePlayerInitHandler);
         game.on('turn-update', gameTurnUpdateHandler);
         game.on('illegal-path', gameIllegalPathHandler);
+        // 监听 game 状态改变
+        game.on('game-state-change', gameStateChangeHandler);
         game.init();
     };
 
@@ -94,6 +121,7 @@ const useGame = () => {
         changeAssistLineDisplay,
         player1Ctrl,
         player2Ctrl,
+        gameState,
     };
 };
 
@@ -106,6 +134,7 @@ const {
     changeAssistLineDisplay,
     player1Ctrl,
     player2Ctrl,
+    gameState,
 } = useGame();
 
 initApp(initGame);
@@ -140,19 +169,18 @@ initApp(initGame);
         &.current {
             border: 5px dashed #f7fd17;
             pointer-events: auto;
-            &::after {
-                background-color: transparent;
-            }
         }
 
-        &::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            pointer-events: none;
+        &.disabled {
+            &::after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                pointer-events: none;
+            }
         }
     }
 }

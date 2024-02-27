@@ -15,19 +15,17 @@ class Role extends PIXI.Sprite {
         this.container = container;
         this.player = player;
         this.boardEntity = boardEntity;
+
+        this.init();
     }
-    async init() {
+    init() {
         this.width = boardRectSize;
         this.height = boardRectSize;
-        await this.updatePath();
         const currentRect = this.boardEntity.getElementByPos(this.player.x, this.player.y);
         currentRect.fillByRole = true;
         const position = currentRect.position;
         this.position.set(position.x, position.y);
         this.container.addChild(this);
-    }
-    async updatePath() {
-        await this.player.calcAStarPath();
     }
 }
 

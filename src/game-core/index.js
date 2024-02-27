@@ -10,7 +10,15 @@ import RectEntity from './entity/rect';
 import Grid from './virtual/grid';
 import Player from './virtual/player';
 
-import { role1Img, role2Img, PlayerInitPos, boardTotalWidth, boardTotalHeight, RoleMoveModeEnum } from './const-value';
+import {
+    role1Img,
+    role2Img,
+    PlayerInitPos,
+    boardTotalWidth,
+    boardTotalHeight,
+    RoleMoveModeEnum,
+    GameStatusEnum,
+} from './const-value';
 
 class Game extends PIXI.utils.EventEmitter {
     app;
@@ -26,8 +34,10 @@ class Game extends PIXI.utils.EventEmitter {
     grid;
     player1;
     player2;
-
     currentPlayer;
+
+    _cacheVaildRect = [];
+
     constructor(app) {
         super();
         this.app = app;
@@ -55,6 +65,10 @@ class Game extends PIXI.utils.EventEmitter {
             image: role2Img,
             name: 'player2',
         });
+        await this.player1.init(this.player2);
+        await this.player2.init(this.player1);
+        // 通知外部更新角色信息
+        this.emit('player-init', [this.player1, this.player2]);
 
         /* 实体对象 */
         this.boardEntity = new BoardEntity(this.container, this.grid);
@@ -66,10 +80,6 @@ class Game extends PIXI.utils.EventEmitter {
 
         this.role1Entity = new RoleEntity(this.container, this.player1, this.boardEntity);
         this.role2Entity = new RoleEntity(this.container, this.player2, this.boardEntity);
-        await this.role1Entity.init();
-        await this.role2Entity.init();
-
-        this.emit('player-init', [this.player1, this.player2]);
 
         this.assist1LineEnitity = new AssistLineEnitity(this.container, this.player1, this.boardEntity);
         this.assist2LineEnitity = new AssistLineEnitity(this.container, this.player2, this.boardEntity, 0xff6f64);
@@ -90,15 +100,16 @@ class Game extends PIXI.utils.EventEmitter {
             player1: this.player1,
             player2: this.player2,
         });
-        // 每回合重置为移动模式
-        this.changeCurrentTurnMode(RoleMoveModeEnum.Move);
     }
 
+    // 改变本回合操作模式 移动/阻挡
     changeCurrentTurnMode(mode) {
         if (mode === RoleMoveModeEnum.Block) {
             this.toggleGapInteractive(true);
+            this.toggleRectInteractive(false);
         } else {
             this.toggleGapInteractive(false);
+            this.toggleRectInteractive(true);
         }
     }
 
@@ -131,6 +142,30 @@ class Game extends PIXI.utils.EventEmitter {
         }
     }
 
+    toggleRectInteractive(isOpen) {
+        /**
+         * 1. 根据当前角色，相邻gap属性，相邻rect属性，找出目标rect
+         * 2. 对找到的rect进行处理
+         */
+        if (isOpen) {
+            const currentValidRects = this.currentPlayer.getValidRects();
+            currentValidRects.forEach(item => {
+                const ele = this.boardEntity.getElementByPos(item.x, item.y);
+                if (ele instanceof RectEntity) {
+                    this._cacheVaildRect.push(ele);
+                    ele.doOpenInteractive();
+                }
+            });
+        } else {
+            if (this._cacheVaildRect.length) {
+                this._cacheVaildRect.forEach(rect => {
+                    rect.doCloseInteractive();
+                });
+                this._cacheVaildRect = [];
+            }
+        }
+    }
+
     initEvent() {
         this.boardEntity.on('onGapHover', this.onGapHover.bind(this));
         this.boardEntity.on('onGapLeave', this.onGapLeave.bind(this));
@@ -158,18 +193,23 @@ class Game extends PIXI.utils.EventEmitter {
             gapInfo.d,
             async () => {
                 this.currentPlayer.useBlock();
-                await this.role1Entity.updatePath();
-                await this.role2Entity.updatePath();
-                this.assist1LineEnitity.draw();
-                this.assist2LineEnitity.draw();
+                // 先进行玩家的下一回合数据计算，用来判断是否违规，以及获取下一回合玩家的可移动格子
+                await this.player1.nextTurn();
+                await this.player2.nextTurn();
                 const path1 = this.player1.getPaths();
                 const path2 = this.player2.getPaths();
+
+                this.assist1LineEnitity.draw();
+                this.assist2LineEnitity.draw();
 
                 // 判断是否为违规放置
                 if (!path1?.length || !path2?.length) {
                     this.toggleGapInteractive(false);
+                    this.toggleRectInteractive(false);
                     this.emit('illegal-path', this.currentPlayer);
+                    this.emit('game-state-change', GameStatusEnum.End);
                 } else {
+                    // 执行游戏的下一回合
                     this.nextTurn();
                 }
             },
