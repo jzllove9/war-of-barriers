@@ -88,6 +88,7 @@ class Gap extends PIXI.Graphics {
     doCloseInteractive() {
         this.cursor = 'none';
         this.eventMode = 'none';
+        this.off('pointerover', this.hoverHandler, this);
     }
     doBlock() {
         this.blocked = true;

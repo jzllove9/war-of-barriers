@@ -11,6 +11,7 @@ class Player {
     image;
     blocks;
     enemyPlayer;
+    roleEntity;
     validRects = [];
     constructor({ x, y, targetY, grid, name, image }) {
         this.x = x;
@@ -22,8 +23,9 @@ class Player {
         this.image = image;
         this.blocks = new Blocks();
     }
-    async init(enemy) {
+    async init(enemy, roleEntity) {
         this.enemyPlayer = enemy;
+        this.roleEntity = roleEntity;
         await this.nextTurn();
     }
     getImage() {
@@ -35,15 +37,18 @@ class Player {
     getValidRects() {
         return this.validRects;
     }
-    move(x, y, cb) {
-        this.x = x;
-        this.y = y;
-        cb(x, y);
+    move(indexPos, position, cb) {
+        this.x = indexPos.x;
+        this.y = indexPos.y;
+        this.roleEntity.x = position.x;
+        this.roleEntity.y = position.y;
     }
+
     async nextTurn() {
         await this.calcAStarPath();
         this.calcAllValidGrid();
     }
+
     async calcAStarPath() {
         const resPathArr = [];
         for (let i = 0; i < boardCol; i++) {
@@ -57,6 +62,7 @@ class Player {
 
         this.aStarPaths = resPathArr;
     }
+
     /**
      * 获取从当前位置出发，所有可行的进格子
      */

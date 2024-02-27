@@ -60,12 +60,16 @@ const onChangeModeBtnClick = mode => {
     emits('change-mode', mode);
 };
 
+const setMode = mode => {
+    currentMode.value = mode;
+};
+
 const onToggleAssistLineChange = value => {
     emits('change-assistLine-display', value);
 };
 
 defineExpose({
-    onChangeModeBtnClick,
+    setMode,
 });
 </script>
 

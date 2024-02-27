@@ -42,7 +42,10 @@ class Board extends PIXI.utils.EventEmitter {
                         const currentJ = j * 0.5;
                         const rect = new RectEntity(
                             currentJ * (boardRectSize + boardGapSize),
-                            currentI * (boardRectSize + boardGapSize)
+                            currentI * (boardRectSize + boardGapSize),
+                            j,
+                            i,
+                            this
                         );
                         this.boardEntityArr[i][j] = rect;
                         board.addChild(rect);

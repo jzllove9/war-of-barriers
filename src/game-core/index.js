@@ -65,10 +65,6 @@ class Game extends PIXI.utils.EventEmitter {
             image: role2Img,
             name: 'player2',
         });
-        await this.player1.init(this.player2);
-        await this.player2.init(this.player1);
-        // 通知外部更新角色信息
-        this.emit('player-init', [this.player1, this.player2]);
 
         /* 实体对象 */
         this.boardEntity = new BoardEntity(this.container, this.grid);
@@ -81,6 +77,11 @@ class Game extends PIXI.utils.EventEmitter {
         this.role1Entity = new RoleEntity(this.container, this.player1, this.boardEntity);
         this.role2Entity = new RoleEntity(this.container, this.player2, this.boardEntity);
 
+        await this.player1.init(this.player2, this.role1Entity);
+        await this.player2.init(this.player1, this.role2Entity);
+        // 通知外部更新角色信息
+        this.emit('player-init', [this.player1, this.player2]);
+
         this.assist1LineEnitity = new AssistLineEnitity(this.container, this.player1, this.boardEntity);
         this.assist2LineEnitity = new AssistLineEnitity(this.container, this.player2, this.boardEntity, 0xff6f64);
 
@@ -92,7 +93,7 @@ class Game extends PIXI.utils.EventEmitter {
 
     // 切换回合
     nextTurn() {
-        // TODO 高亮当前玩家，切换玩家移动权，处理界面内容
+        // 高亮当前玩家，切换玩家移动权，处理界面内容
         this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
         // 通知外部 回合更新
         this.emit('turn-update', {
@@ -100,6 +101,7 @@ class Game extends PIXI.utils.EventEmitter {
             player1: this.player1,
             player2: this.player2,
         });
+        this.changeCurrentTurnMode(RoleMoveModeEnum.Move);
     }
 
     // 改变本回合操作模式 移动/阻挡
@@ -143,10 +145,6 @@ class Game extends PIXI.utils.EventEmitter {
     }
 
     toggleRectInteractive(isOpen) {
-        /**
-         * 1. 根据当前角色，相邻gap属性，相邻rect属性，找出目标rect
-         * 2. 对找到的rect进行处理
-         */
         if (isOpen) {
             const currentValidRects = this.currentPlayer.getValidRects();
             currentValidRects.forEach(item => {
@@ -158,8 +156,8 @@ class Game extends PIXI.utils.EventEmitter {
             });
         } else {
             if (this._cacheVaildRect.length) {
-                this._cacheVaildRect.forEach(rect => {
-                    rect.doCloseInteractive();
+                this._cacheVaildRect.forEach(ele => {
+                    ele.doCloseInteractive();
                 });
                 this._cacheVaildRect = [];
             }
@@ -170,6 +168,7 @@ class Game extends PIXI.utils.EventEmitter {
         this.boardEntity.on('onGapHover', this.onGapHover.bind(this));
         this.boardEntity.on('onGapLeave', this.onGapLeave.bind(this));
         this.boardEntity.on('onGapClick', this.onGapClick.bind(this));
+        this.boardEntity.on('onRectClick', this.onRectClick.bind(this));
     }
 
     onGapHover(gapInfo) {
@@ -217,6 +216,17 @@ class Game extends PIXI.utils.EventEmitter {
                 console.log('存在碰撞，不能放置');
             }
         );
+    }
+
+    onRectClick({ indexPos, position }) {
+        // console.log('jzl:  ~ Game ~ indexPos, position:', indexPos, position);
+        this.toggleRectInteractive(false);
+        const originRect = this.boardEntity.getElementByPos(this.currentPlayer.y, this.currentPlayer.x);
+        const targetRect = this.boardEntity.getElementByPos(indexPos.y, indexPos.x);
+        originRect.fillByRole = false;
+        targetRect.fillByRole = true;
+        this.currentPlayer.move(indexPos, position);
+        this.nextTurn();
     }
 }
 

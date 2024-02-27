@@ -72,8 +72,8 @@ const useGame = () => {
         currentPlayer.value = current;
         player1Info.value = { ...player1Info.value, ...player1 };
         player2Info.value = { ...player2Info.value, ...player2 };
-        player1Ctrl.value.onChangeModeBtnClick(RoleMoveModeEnum.Move);
-        player2Ctrl.value.onChangeModeBtnClick(RoleMoveModeEnum.Move);
+        player1Ctrl.value.setMode(RoleMoveModeEnum.Move);
+        player2Ctrl.value.setMode(RoleMoveModeEnum.Move);
     };
 
     const gameIllegalPathHandler = player => {
