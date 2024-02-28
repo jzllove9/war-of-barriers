@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import * as TWEEN from '@tweenjs/tween.js';
 
 import BoardEntity from './entity/board';
 import RoleEntity from './entity/role';
@@ -13,7 +14,7 @@ import Player from './virtual/player';
 import {
     role1Img,
     role2Img,
-    PlayerInitPos,
+    PlayerInit,
     boardTotalWidth,
     boardTotalHeight,
     RoleMoveModeEnum,
@@ -50,20 +51,22 @@ class Game extends PIXI.utils.EventEmitter {
         /* 虚拟对象 */
         this.grid = new Grid();
         this.player1 = new Player({
-            x: PlayerInitPos.player1[0],
-            y: PlayerInitPos.player1[1],
-            targetY: PlayerInitPos.player2[1],
+            x: PlayerInit.player1.pos[0],
+            y: PlayerInit.player1.pos[1],
+            targetY: PlayerInit.player2.pos[1],
             grid: this.grid,
             image: role1Img,
             name: 'player1',
+            gridColor: PlayerInit.player1.gridColor,
         });
         this.player2 = new Player({
-            x: PlayerInitPos.player2[0],
-            y: PlayerInitPos.player2[1],
-            targetY: PlayerInitPos.player1[1],
+            x: PlayerInit.player2.pos[0],
+            y: PlayerInit.player2.pos[1],
+            targetY: PlayerInit.player1.pos[1],
             grid: this.grid,
             image: role2Img,
             name: 'player2',
+            gridColor: PlayerInit.player2.gridColor,
         });
 
         /* 实体对象 */
@@ -146,15 +149,18 @@ class Game extends PIXI.utils.EventEmitter {
 
     toggleRectInteractive(isOpen) {
         if (isOpen) {
+            this.currentPlayer.toggleSelected(true);
+            const gridColor = this.currentPlayer.getGridColor();
             const currentValidRects = this.currentPlayer.getValidRects();
             currentValidRects.forEach(item => {
                 const ele = this.boardEntity.getElementByPos(item.x, item.y);
                 if (ele instanceof RectEntity) {
                     this._cacheVaildRect.push(ele);
-                    ele.doOpenInteractive();
+                    ele.doOpenInteractive(gridColor);
                 }
             });
         } else {
+            this.currentPlayer.toggleSelected(false);
             if (this._cacheVaildRect.length) {
                 this._cacheVaildRect.forEach(ele => {
                     ele.doCloseInteractive();
@@ -169,6 +175,9 @@ class Game extends PIXI.utils.EventEmitter {
         this.boardEntity.on('onGapLeave', this.onGapLeave.bind(this));
         this.boardEntity.on('onGapClick', this.onGapClick.bind(this));
         this.boardEntity.on('onRectClick', this.onRectClick.bind(this));
+        this.app.ticker.add(() => {
+            TWEEN.update();
+        });
     }
 
     onGapHover(gapInfo) {
@@ -184,6 +193,7 @@ class Game extends PIXI.utils.EventEmitter {
         if (gapInfo?.b) return;
         if (!this.currentPlayer?.getRemainBlocks()) {
             console.log(`玩家${this.currentPlayer.name}剩余block不足`);
+            this.emit('block-remain-lack', this.currentPlayer);
             return;
         }
         this.blockEntity.generateBlock(
@@ -193,13 +203,9 @@ class Game extends PIXI.utils.EventEmitter {
             async () => {
                 this.currentPlayer.useBlock();
                 // 先进行玩家的下一回合数据计算，用来判断是否违规，以及获取下一回合玩家的可移动格子
-                await this.player1.nextTurn();
-                await this.player2.nextTurn();
+                await this.updatePlayerInfo();
                 const path1 = this.player1.getPaths();
                 const path2 = this.player2.getPaths();
-
-                this.assist1LineEnitity.draw();
-                this.assist2LineEnitity.draw();
 
                 // 判断是否为违规放置
                 if (!path1?.length || !path2?.length) {
@@ -218,15 +224,38 @@ class Game extends PIXI.utils.EventEmitter {
         );
     }
 
-    onRectClick({ indexPos, position }) {
-        // console.log('jzl:  ~ Game ~ indexPos, position:', indexPos, position);
+    async onRectClick({ indexPos, position }) {
+        this.toggleGapInteractive(false);
         this.toggleRectInteractive(false);
         const originRect = this.boardEntity.getElementByPos(this.currentPlayer.y, this.currentPlayer.x);
         const targetRect = this.boardEntity.getElementByPos(indexPos.y, indexPos.x);
+        await this.currentPlayer.move(indexPos, position);
         originRect.fillByRole = false;
         targetRect.fillByRole = true;
-        this.currentPlayer.move(indexPos, position);
-        this.nextTurn();
+
+        if (this._checkGameEnd()) {
+            this.emit('player-win', this.currentPlayer);
+            this.emit('game-state-change', GameStatusEnum.End);
+        } else {
+            await this.updatePlayerInfo();
+            this.nextTurn();
+        }
+    }
+
+    _checkGameEnd() {
+        return this.currentPlayer.isWin();
+    }
+
+    // 重新计算 player 信息
+    async updatePlayerInfo() {
+        await this.player1.nextTurn();
+        await this.player2.nextTurn();
+        this.assist1LineEnitity.draw();
+        this.assist2LineEnitity.draw();
+    }
+
+    destory() {
+        TWEEN.removeAll();
     }
 }
 

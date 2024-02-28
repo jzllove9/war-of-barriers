@@ -14,7 +14,7 @@ const boardGapSize = 10;
  * (N % 2 !== 0) && (Math.floor(N * 0.5) % 2 === 0)
  * 例如: 3,5,9,13,17...
  */
-const N = 5;
+const N = 9;
 const boardRow = 2 * N - 1;
 const boardCol = 2 * N - 1;
 const boardTotalWidth = boardRectSize * N + boardGapSize * (N - 1);
@@ -34,8 +34,6 @@ const ElementTypeEnum = {
 const ColorEnum = {
     // 棋盘格子颜色
     boardRectColor: 0x0000ff,
-    // 棋盘格子高亮颜色
-    boardRectHighlightColor: 0x7a06d6,
     // 棋盘间隔颜色
     boardGapColor: 0x222222,
     // 棋盘间隔颜色2
@@ -46,9 +44,15 @@ const ColorEnum = {
     invalidBlockColor: 0xff0000,
 };
 // 角色初始化位置
-const PlayerInitPos = {
-    player1: [Math.floor(boardCol * 0.5), boardRow - 1],
-    player2: [Math.floor(boardCol * 0.5), 0],
+const PlayerInit = {
+    player1: {
+        pos: [Math.floor(boardCol * 0.5), boardRow - 1],
+        gridColor: 0x1afa28,
+    },
+    player2: {
+        pos: [Math.floor(boardCol * 0.5), 0],
+        gridColor: 0xd81e07,
+    },
 };
 // 每人最大 block 数量
 const MaxBlocksNum = 10;
@@ -75,7 +79,7 @@ export {
     GapDirect,
     ColorEnum,
     ElementTypeEnum,
-    PlayerInitPos,
+    PlayerInit,
     role1Img,
     role2Img,
     MaxBlocksNum,

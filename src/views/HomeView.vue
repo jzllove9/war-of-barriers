@@ -29,10 +29,29 @@
             ></PlayerController>
         </div>
     </div>
+
+    <VueFinalModal
+        v-model="isShow"
+        title="Hello World!"
+        :clickToClose="false"
+        :escToClose="false"
+        :hide-overlay="true"
+        @confirm="() => confirm()"
+        :class="$style['modal-wrap']"
+    >
+        <div class="modal-container">
+            <div class="title">游戏结束</div>
+            <div v-if="modalText" class="content">{{ modalText }}</div>
+            <div class="btn" @click="onRestart">重新开始</div>
+        </div>
+    </VueFinalModal>
 </template>
 
 <script setup>
 import * as PIXI from 'pixi.js';
+import { VueFinalModal } from 'vue-final-modal';
+import { toast } from 'vue3-toastify';
+
 import Game from '../game-core/index';
 import PlayerController from '../components/player-controller.vue';
 import { RoleMoveModeEnum, GameStatusEnum } from '@/game-core/const-value';
@@ -76,10 +95,6 @@ const useGame = () => {
         player2Ctrl.value.setMode(RoleMoveModeEnum.Move);
     };
 
-    const gameIllegalPathHandler = player => {
-        console.log(`玩家${player.name}违规，游戏结束`);
-    };
-
     const gameStateChangeHandler = status => {
         gameState.value = status;
         switch (gameState.value) {
@@ -92,11 +107,27 @@ const useGame = () => {
         }
     };
 
+    const gameIllegalPathHandler = player => {
+        showModal(`玩家 ${player.name} 违规`);
+    };
+
+    const gamePlayerWinHandler = player => {
+        showModal(`玩家 ${player.name} 胜利`);
+    };
+
+    const gameBlockRemainLackHandler = player => {
+        toast(`玩家 ${player.name} 剩余挡板不足！`, {
+            theme: 'dark',
+        });
+    };
+
     const initGame = app => {
         game = new Game(app);
         game.on('player-init', gamePlayerInitHandler);
         game.on('turn-update', gameTurnUpdateHandler);
+        game.on('player-win', gamePlayerWinHandler);
         game.on('illegal-path', gameIllegalPathHandler);
+        game.on('block-remain-lack', gameBlockRemainLackHandler);
         // 监听 game 状态改变
         game.on('game-state-change', gameStateChangeHandler);
         game.init();
@@ -122,6 +153,7 @@ const useGame = () => {
         player1Ctrl,
         player2Ctrl,
         gameState,
+        game,
     };
 };
 
@@ -135,9 +167,35 @@ const {
     player1Ctrl,
     player2Ctrl,
     gameState,
+    game,
 } = useGame();
 
 initApp(initGame);
+
+const useModal = () => {
+    const modalText = ref();
+    const isShow = ref(false);
+    function showModal(text) {
+        modalText.value = text;
+        isShow.value = true;
+    }
+
+    function confirm() {
+        isShow.value = false;
+    }
+
+    return { isShow, showModal, confirm, modalText };
+};
+
+const { isShow, showModal, confirm, modalText } = useModal();
+
+const onRestart = () => {
+    location.reload();
+};
+
+onBeforeUnmount(() => {
+    game?.destory();
+});
 </script>
 
 <style lang="less" scoped>
@@ -180,6 +238,47 @@ initApp(initGame);
                 top: 0;
                 background-color: rgba(0, 0, 0, 0.5);
                 pointer-events: none;
+            }
+        }
+    }
+}
+</style>
+
+<style lang="less" module>
+.modal-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    :global {
+        .modal-container {
+            width: 500px;
+            background-color: rgb(17, 24, 39);
+            border: 1px solid rgb(55, 65, 81);
+            border-radius: 8px;
+            padding: 32px;
+            color: #ecebe8;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            .title {
+                font-size: 30px;
+                font-weight: 500;
+            }
+
+            .content {
+                margin-top: 16px;
+            }
+
+            .btn {
+                margin-top: 32px;
+                padding: 4px 8px;
+                border: 1px solid #e5e7eb;
+                border-radius: 4px;
+                cursor: pointer;
+                &:hover {
+                    opacity: 0.8;
+                }
             }
         }
     }

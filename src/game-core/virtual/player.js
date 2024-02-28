@@ -3,7 +3,6 @@ import { boardCol } from '@/game-core/const-value';
 class Player {
     x;
     y;
-    targetX;
     targetY;
     aStarPaths;
     name;
@@ -12,8 +11,9 @@ class Player {
     blocks;
     enemyPlayer;
     roleEntity;
+    gridColor;
     validRects = [];
-    constructor({ x, y, targetY, grid, name, image }) {
+    constructor({ x, y, targetY, grid, name, image, gridColor }) {
         this.x = x;
         this.y = y;
         this.targetY = targetY;
@@ -21,6 +21,7 @@ class Player {
         this.grid = grid;
         this.name = name;
         this.image = image;
+        this.gridColor = gridColor;
         this.blocks = new Blocks();
     }
     async init(enemy, roleEntity) {
@@ -37,11 +38,20 @@ class Player {
     getValidRects() {
         return this.validRects;
     }
-    move(indexPos, position, cb) {
+    getGridColor() {
+        return this.gridColor;
+    }
+    isWin() {
+        return this.y === this.targetY;
+    }
+    async move(indexPos, position) {
         this.x = indexPos.x;
         this.y = indexPos.y;
-        this.roleEntity.x = position.x;
-        this.roleEntity.y = position.y;
+        await this.roleEntity.move(position);
+    }
+
+    toggleSelected(isOpen) {
+        this.roleEntity.toggleSelected(isOpen);
     }
 
     async nextTurn() {
