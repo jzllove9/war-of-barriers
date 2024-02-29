@@ -30,7 +30,6 @@ class Grid {
         return this.grid;
     }
     updateGrid(grid) {
-        // console.log('jzl:  ~ Grid ~ updateGrid ~ grid:', grid);
         this.easyStar.setGrid(grid);
     }
     setBlock(x, y) {

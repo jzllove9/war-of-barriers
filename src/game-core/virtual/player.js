@@ -194,7 +194,6 @@ class Player {
     }
     useBlock() {
         const remain = this.blocks.decreaseRemain();
-        console.log(`玩家${this.name}使用block，剩余${remain}`);
     }
 }
 

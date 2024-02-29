@@ -121,6 +121,10 @@ const useGame = () => {
         });
     };
 
+    const gameBlockHitHandler = () => {
+        toast('存在碰撞，不能在此处放置挡板!')
+    };
+
     const initGame = app => {
         game = new Game(app);
         game.on('player-init', gamePlayerInitHandler);
@@ -128,6 +132,7 @@ const useGame = () => {
         game.on('player-win', gamePlayerWinHandler);
         game.on('illegal-path', gameIllegalPathHandler);
         game.on('block-remain-lack', gameBlockRemainLackHandler);
+        game.on('block-hit', gameBlockHitHandler);
         // 监听 game 状态改变
         game.on('game-state-change', gameStateChangeHandler);
         game.init();

@@ -192,7 +192,6 @@ class Game extends PIXI.utils.EventEmitter {
     onGapClick(gapInfo) {
         if (gapInfo?.b) return;
         if (!this.currentPlayer?.getRemainBlocks()) {
-            console.log(`玩家${this.currentPlayer.name}剩余block不足`);
             this.emit('block-remain-lack', this.currentPlayer);
             return;
         }
@@ -219,7 +218,7 @@ class Game extends PIXI.utils.EventEmitter {
                 }
             },
             () => {
-                console.log('存在碰撞，不能放置');
+                this.emit('block-hit', this.currentPlayer);
             }
         );
     }

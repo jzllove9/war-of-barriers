@@ -128,11 +128,6 @@ class Block extends PIXI.Graphics {
     }
 
     drawBlock(graphics, indexX, indexY, direct, a = 1, color = ColorEnum.blockColor) {
-        // TODO debug 为了查看绘制block的函数是否调用（绘制实际block的情况下）
-        if (a === 1) {
-            console.log('🚀 ~ Block ~ drawBlock ~ drawBlock:');
-        }
-
         const currentElement = this.boardInstance.getElementByPos(indexX, indexY);
         const currentX = direct === GapDirect.horizontal ? currentElement.x + PosOffset : currentElement.x;
         const currentY = direct === GapDirect.horizontal ? currentElement.y : currentElement.y + PosOffset;
