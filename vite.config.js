@@ -7,6 +7,7 @@ import AutoImport from 'unplugin-auto-import/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: '/war-of-barriers',
     plugins: [
         vue(),
         vueJsx(),
