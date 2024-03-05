@@ -2,8 +2,10 @@
 
 桌游《围追堵截》web版，使用 pixi.js 实现。
 
+
 ### 桌游《围追堵截》游戏规则说明
 [游戏规则](./RULE.md)
+
 
 ### 在线DEMO
 [在线体验](http://www.jiajialove.com/war-of-barriers/)
