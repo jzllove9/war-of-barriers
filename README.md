@@ -5,6 +5,9 @@
 ### 桌游《围追堵截》游戏规则说明
 [游戏规则](./RULE.md)
 
+### 在线DEMO
+[在线体验](http://www.jiajialove.com/war-of-barriers/)
+
 ### 启动方式
 ```
     1. git clone git@github.com:jzllove9/war-of-barriers.git
