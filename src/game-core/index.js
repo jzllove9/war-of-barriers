@@ -190,7 +190,9 @@ class Game extends PIXI.utils.EventEmitter {
 
     // 重新计算角色路径，辅助线重绘
     onGapClick(gapInfo) {
+        // check gap blocked
         if (gapInfo?.b) return;
+
         if (!this.currentPlayer?.getRemainBlocks()) {
             this.emit('block-remain-lack', this.currentPlayer);
             return;
